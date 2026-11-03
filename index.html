@@ -41,8 +41,34 @@ header .wrap { padding: 0; display: flex; flex-wrap: wrap; align-items: end; jus
 h1 { font-family: var(--display); font-weight: 400; letter-spacing: .03em; font-size: clamp(34px, 5vw, 52px); line-height: 1; margin: 0; text-wrap: balance; }
 .sub { margin: 6px 0 0; color: #DCEAF7; font-size: 16px; }
 .count { font-family: var(--display); font-size: 22px; letter-spacing: .04em; color: var(--paper); background: var(--deep); padding: 6px 14px; border-radius: 4px; }
-.filters { display: flex; flex-wrap: wrap; gap: 8px; padding: 20px 0 6px; }
-.filters + .filters { padding-top: 4px; }
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 20px 0 4px; }
+.fbtn { display: inline-flex; align-items: center; gap: 8px; font: 700 15px var(--body); background: var(--card); color: var(--ink); border: 1px solid var(--line); border-radius: 999px; padding: 10px 18px; cursor: pointer; }
+.fbtn:hover { border-color: var(--navy); }
+.fcount { background: var(--navy); color: #fff; border-radius: 999px; font-size: 12px; min-width: 20px; height: 20px; display: inline-grid; place-items: center; padding: 0 6px; }
+.active { display: flex; flex-wrap: wrap; gap: 8px; }
+.pill { display: inline-flex; align-items: center; gap: 6px; font: 600 14px var(--body); background: var(--sky); color: var(--ink); border: 0; border-radius: 999px; padding: 7px 12px; cursor: pointer; }
+.pill b { font-weight: 700; font-size: 16px; line-height: 1; }
+.pill.link { background: none; text-decoration: underline; color: var(--muted); }
+.scrim { position: fixed; inset: 0; background: rgba(10, 20, 45, .45); z-index: 20; }
+.panel { position: fixed; top: 0; right: 0; bottom: 0; width: min(380px, 100vw); background: var(--card); color: var(--ink); z-index: 21; display: flex; flex-direction: column; box-shadow: -12px 0 32px rgba(10, 20, 45, .25); animation: slide .2s ease; }
+@keyframes slide { from { transform: translateX(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+.phead { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px; border-bottom: 1px solid var(--line); }
+.phead h2 { font-family: var(--display); font-weight: 400; letter-spacing: .03em; font-size: 30px; margin: 0; }
+.x { background: none; border: 0; font-size: 30px; line-height: 1; color: var(--muted); cursor: pointer; padding: 4px 8px; }
+.pbody { flex: 1; overflow-y: auto; padding: 8px 20px 20px; }
+fieldset { border: 0; margin: 0; padding: 16px 0 4px; }
+legend { font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); padding: 0; margin-bottom: 10px; }
+.opts { display: flex; flex-wrap: wrap; gap: 8px; }
+.opt input { position: absolute; opacity: 0; pointer-events: none; }
+.opt span { display: inline-block; font: 600 14px var(--body); border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px; cursor: pointer; background: var(--card); }
+.opt input:checked + span { background: var(--navy); border-color: var(--navy); color: #fff; }
+.opt input:focus-visible + span { outline: 3px solid var(--sky); outline-offset: 2px; }
+.pfoot { display: flex; gap: 10px; padding: 14px 20px; border-top: 1px solid var(--line); }
+.pfoot button { font: 700 15px var(--body); border-radius: 999px; padding: 12px 18px; cursor: pointer; }
+.clear { background: none; border: 1px solid var(--line); color: var(--ink); }
+.show { flex: 1; background: var(--navy); border: 1px solid var(--navy); color: #fff; }
+body.locked { overflow: hidden; }
+[hidden] { display: none !important; }
 .empty { grid-column: 1 / -1; color: var(--muted); font-size: 16px; padding: 24px 0; }
 .chip { font: 600 14px var(--body); border: 1px solid var(--line); background: var(--card); color: var(--ink); padding: 8px 14px; border-radius: 999px; cursor: pointer; }
 .chip[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); color: #fff; }
@@ -86,15 +112,23 @@ footer { color: var(--muted); font-size: 14px; padding: 16px 0 28px; }
   </div>
 </header>
 <main class="wrap">
-  <div class="filters" role="group" aria-label="Filter by city">
-    <button type="button" class="chip" data-city="" aria-pressed="true">All cities</button><button type="button" class="chip" data-city="Dothan">Dothan</button><button type="button" class="chip" data-city="Ozark">Ozark</button><button type="button" class="chip" data-city="Enterprise">Enterprise</button>
+  <div class="toolbar">
+    <button type="button" class="fbtn" id="fbtn" aria-haspopup="dialog" aria-controls="fpanel">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+      Filters<span class="fcount" id="fcount" hidden></span>
+    </button>
+    <div class="active" id="active"></div>
   </div>
-  <div class="filters" role="group" aria-label="Filter by price">
-    <button type="button" class="chip pchip" data-band="" aria-pressed="true">All prices</button><button type="button" class="chip pchip" data-band="u100" aria-pressed="false">Under $100K</button><button type="button" class="chip pchip" data-band="100-200" aria-pressed="false">$100K–$200K</button><button type="button" class="chip pchip" data-band="200-300" aria-pressed="false">$200K–$300K</button><button type="button" class="chip pchip" data-band="300p" aria-pressed="false">$300K+</button>
-  </div>
-  <div class="filters" role="group" aria-label="Filter by size">
-    <button type="button" class="chip schip" data-size="" aria-pressed="true">All sizes</button><button type="button" class="chip schip" data-size="u1500" aria-pressed="false">Under 1,500 sq ft</button><button type="button" class="chip schip" data-size="1500-2000" aria-pressed="false">1,500–2,000</button><button type="button" class="chip schip" data-size="2000-2500" aria-pressed="false">2,000–2,500</button><button type="button" class="chip schip" data-size="2500p" aria-pressed="false">2,500+ sq ft</button>
-  </div>
+  <div class="scrim" id="scrim" hidden></div>
+  <aside class="panel" id="fpanel" role="dialog" aria-modal="true" aria-labelledby="ftitle" hidden>
+    <div class="phead"><h2 id="ftitle">Filters</h2><button type="button" class="x" id="fclose" aria-label="Close filters">&times;</button></div>
+    <div class="pbody">
+      <fieldset><legend>City</legend><div class="opts"><label class="opt"><input type="radio" name="city" value="" checked><span>Any</span></label><label class="opt"><input type="radio" name="city" value="Cowarts"><span>Cowarts</span></label><label class="opt"><input type="radio" name="city" value="Dothan"><span>Dothan</span></label><label class="opt"><input type="radio" name="city" value="Enterprise"><span>Enterprise</span></label><label class="opt"><input type="radio" name="city" value="Geneva"><span>Geneva</span></label><label class="opt"><input type="radio" name="city" value="Ozark"><span>Ozark</span></label></div></fieldset>
+      <fieldset><legend>Price</legend><div class="opts"><label class="opt"><input type="radio" name="band" value="" checked><span>Any</span></label><label class="opt"><input type="radio" name="band" value="u100"><span>Under $100K</span></label><label class="opt"><input type="radio" name="band" value="100-200"><span>$100K–$200K</span></label><label class="opt"><input type="radio" name="band" value="200-300"><span>$200K–$300K</span></label><label class="opt"><input type="radio" name="band" value="300p"><span>$300K+</span></label></div></fieldset>
+      <fieldset><legend>Size</legend><div class="opts"><label class="opt"><input type="radio" name="size" value="" checked><span>Any</span></label><label class="opt"><input type="radio" name="size" value="u1500"><span>Under 1,500 sq ft</span></label><label class="opt"><input type="radio" name="size" value="1500-2000"><span>1,500–2,000</span></label><label class="opt"><input type="radio" name="size" value="2000-2500"><span>2,000–2,500</span></label><label class="opt"><input type="radio" name="size" value="2500p"><span>2,500+ sq ft</span></label></div></fieldset>
+    </div>
+    <div class="pfoot"><button type="button" class="clear" id="fclear">Clear all</button><button type="button" class="show" id="fshow">Show homes</button></div>
+  </aside>
   <div class="grid" id="grid">
     <a class="card" data-city="Cowarts" data-band="100-200" data-size="u1500" href="https://www.zillow.com/homedetails/41-Katie-Dr-Cowarts-AL-36321/213813323_zpid/" target="_blank" rel="noopener"><div class="photo"><img src="covers/41-katie-dr-cowarts-al-36321.jpg" alt="Front of 41 Katie Dr" loading="lazy"></div><div class="meta"><h2>41 Katie Dr</h2><p class="city">Cowarts, AL 36321</p><p class="specs">3 bd &middot; 1 ba &middot; 1,367 sq ft</p><span class="cta">See details &rarr;</span></div></a><a class="card" data-city="Dothan" data-band="200-300" data-size="2000-2500" href="https://www.zillow.com/homedetails/103-Shawnee-Ct-Dothan-AL-36303/76009579_zpid/" target="_blank" rel="noopener"><div class="photo"><img src="covers/103-shawnee-ct-dothan-al-36303.jpg" alt="Front of 103 Shawnee Ct" loading="lazy"></div><div class="meta"><h2>103 Shawnee Ct</h2><p class="city">Dothan, AL 36303</p><p class="specs">4 bd &middot; 2.5 ba &middot; 2,101 sq ft</p><span class="cta">See details &rarr;</span></div></a><a class="card" data-city="Dothan" data-band="300p" data-size="2500p" href="https://www.zillow.com/homedetails/123-Waterford-Pl-Dothan-AL-36303/81653686_zpid/" target="_blank" rel="noopener"><div class="photo"><img src="covers/123-waterford-pl-dothan-al-36303.jpg" alt="Front of 123 Waterford Pl" loading="lazy"></div><div class="meta"><h2>123 Waterford Pl</h2><p class="city">Dothan, AL 36303</p><p class="specs">5 bd &middot; 4 ba &middot; 3,594 sq ft</p><span class="cta">See details &rarr;</span></div></a><a class="card" data-city="Dothan" data-band="200-300" data-size="2500p" href="https://www.zillow.com/homedetails/1400-Osceola-St-Dothan-AL-36303/76015883_zpid/" target="_blank" rel="noopener"><div class="photo"><img src="covers/1400-osceola-st-dothan-al-36303.jpg" alt="Front of 1400 Osceola St" loading="lazy"></div><div class="meta"><h2>1400 Osceola St</h2><p class="city">Dothan, AL 36303</p><p class="specs">3 bd &middot; 2 ba &middot; 2,621 sq ft</p><span class="cta">See details &rarr;</span></div></a><a class="card" data-city="Dothan" data-band="300p" data-size="2500p" href="https://www.zillow.com/homedetails/1603-Selkirk-Dr-Dothan-AL-36303/76012326_zpid/" target="_blank" rel="noopener"><div class="photo"><img src="covers/1603-selkirk-dr-dothan-al-36303.jpg" alt="Front of 1603 Selkirk Dr" loading="lazy"></div><div class="meta"><h2>1603 Selkirk Dr</h2><p class="city">Dothan, AL 36303</p><p class="specs">4 bd &middot; 2.5 ba &middot; 3,682 sq ft</p><span class="cta">See details &rarr;</span></div></a><a class="card" data-city="Dothan" data-band="200-300" data-size="2000-2500" href="https://www.zillow.com/homedetails/1804-Verde-Trl-Dothan-AL-36303/76010510_zpid/" target="_blank" rel="noopener"><div class="photo"><img src="covers/1804-verde-trl-dothan-al-36303.jpg" alt="Front of 1804 Verde Trl" loading="lazy"></div><div class="meta"><h2>1804 Verde Trl</h2><p class="city">Dothan, AL 36303</p><p class="specs">5 bd &middot; 2 ba &middot; 2,466 sq ft</p><span class="cta">See details &rarr;</span></div></a><a class="card" data-city="Dothan" data-band="200-300" data-size="1500-2000" href="https://www.zillow.com/homedetails/412-Mill-Creek-Cir-Dothan-AL-36305/76013704_zpid/" target="_blank" rel="noopener"><div class="photo"><img src="covers/412-mill-creek-cir-dothan-al-36305.jpg" alt="Front of 412 Mill Creek Cir" loading="lazy"></div><div class="meta"><h2>412 Mill Creek Cir</h2><p class="city">Dothan, AL 36305</p><p class="specs">3 bd &middot; 2 ba &middot; 1,633 sq ft</p><span class="cta">See details &rarr;</span></div></a><a class="card" data-city="Dothan" data-band="200-300" data-size="2500p" href="https://www.zillow.com/homedetails/506-Randwick-Rd-Dothan-AL-36301/76015226_zpid/" target="_blank" rel="noopener"><div class="photo"><img src="covers/506-randwick-rd-dothan-al-36301.jpg" alt="Front of 506 Randwick Rd" loading="lazy"></div><div class="meta"><h2>506 Randwick Rd</h2><p class="city">Dothan, AL 36301</p><p class="specs">4 bd &middot; 3 ba &middot; 3,400 sq ft</p><span class="cta">See details &rarr;</span></div></a><a class="card" data-city="Dothan" data-band="u100" data-size="u1500" href="https://www.zillow.com/homedetails/511-Madison-Ave-Dothan-AL-36301/213807985_zpid/" target="_blank" rel="noopener"><div class="photo"><img src="covers/511-madison-ave-dothan-al-36301.jpg" alt="Front of 511 Madison Ave" loading="lazy"></div><div class="meta"><h2>511 Madison Ave</h2><p class="city">Dothan, AL 36301</p><p class="specs">4 bd &middot; 3 ba &middot; 1,282 sq ft</p><span class="cta">See details &rarr;</span></div></a><a class="card" data-city="Enterprise" data-band="300p" data-size="1500-2000" href="https://www.zillow.com/homedetails/103-Legacy-Dr-Enterprise-AL-36330/443238224_zpid/" target="_blank" rel="noopener"><div class="photo"><div class="ph" aria-hidden="true"><span>Photo coming soon</span></div><span class="badge">New construction</span></div><div class="meta"><h2>103 Legacy Dr</h2><p class="city">Enterprise, AL 36330</p><p class="specs">4 bd &middot; 2 ba &middot; 1,819 sq ft</p><span class="cta">See details &rarr;</span></div></a><a class="card" data-city="Enterprise" data-band="300p" data-size="1500-2000" href="https://www.zillow.com/homedetails/105-Legacy-Dr-Enterprise-AL-36330/443238331_zpid/" target="_blank" rel="noopener"><div class="photo"><img src="covers/105-legacy-dr-enterprise-al-36330.jpg" alt="Front of 105 Legacy Dr" loading="lazy"><span class="badge">New construction</span></div><div class="meta"><h2>105 Legacy Dr</h2><p class="city">Enterprise, AL 36330</p><p class="specs">4 bd &middot; 2 ba &middot; 1,819 sq ft</p><span class="cta">See details &rarr;</span></div></a><a class="card" data-city="Enterprise" data-band="200-300" data-size="2500p" href="https://www.zillow.com/homedetails/105-Windcreek-Ln-Enterprise-AL-36330/109383402_zpid/" target="_blank" rel="noopener"><div class="photo"><img src="covers/105-windcreek-enterprise-al-36330.jpg" alt="Front of 105 Windcreek" loading="lazy"></div><div class="meta"><h2>105 Windcreek</h2><p class="city">Enterprise, AL 36330</p><p class="specs">4 bd &middot; 3 ba &middot; 2,800 sq ft</p><span class="cta">See details &rarr;</span></div></a><a class="card" data-city="Enterprise" data-band="100-200" data-size="1500-2000" href="https://www.zillow.com/homedetails/107-Wyman-St-Enterprise-AL-36330/109486204_zpid/" target="_blank" rel="noopener"><div class="photo"><div class="ph" aria-hidden="true"><span>Photo coming soon</span></div></div><div class="meta"><h2>107 Wyman St</h2><p class="city">Enterprise, AL 36330</p><p class="specs">3 bd &middot; 2 ba &middot; 1,593 sq ft</p><span class="cta">See details &rarr;</span></div></a><a class="card" data-city="Enterprise" data-band="100-200" data-size="1500-2000" href="https://www.zillow.com/homedetails/1706-Rucker-Blvd-Enterprise-AL-36330/109325899_zpid/" target="_blank" rel="noopener"><div class="photo"><div class="ph" aria-hidden="true"><span>Photo coming soon</span></div></div><div class="meta"><h2>1706 Rucker Blvd</h2><p class="city">Enterprise, AL 36330</p><p class="specs">3 bd &middot; 2 ba &middot; 1,905 sq ft</p><span class="cta">See details &rarr;</span></div></a><a class="card" data-city="Enterprise" data-band="200-300" data-size="2500p" href="https://www.zillow.com/homedetails/209-Washington-Ave-Enterprise-AL-36330/109372475_zpid/" target="_blank" rel="noopener"><div class="photo"><div class="ph" aria-hidden="true"><span>Photo coming soon</span></div></div><div class="meta"><h2>209 Washington Ave</h2><p class="city">Enterprise, AL 36330</p><p class="specs">4 bd &middot; 3 ba &middot; 2,508 sq ft</p><span class="cta">See details &rarr;</span></div></a><a class="card" data-city="Enterprise" data-band="100-200" data-size="1500-2000" href="https://www.zillow.com/homedetails/310-Dixie-Dr-Enterprise-AL-36330/109322890_zpid/" target="_blank" rel="noopener"><div class="photo"><img src="covers/310-dixie-dr-enterprise-al-36330.jpg" alt="Front of 310 Dixie Dr" loading="lazy"></div><div class="meta"><h2>310 Dixie Dr</h2><p class="city">Enterprise, AL 36330</p><p class="specs">4 bd &middot; 2 ba &middot; 1,521 sq ft</p><span class="cta">See details &rarr;</span></div></a><a class="card" data-city="Enterprise" data-band="200-300" data-size="2000-2500" href="https://www.zillow.com/homedetails/410-Melbourne-Dr-Enterprise-AL-36330/109404141_zpid/" target="_blank" rel="noopener"><div class="photo"><img src="covers/410-melbourne-dr-enterprise-al-36330.jpg" alt="Front of 410 Melbourne Dr" loading="lazy"></div><div class="meta"><h2>410 Melbourne Dr</h2><p class="city">Enterprise, AL 36330</p><p class="specs">3 bd &middot; 2 ba &middot; 2,012 sq ft</p><span class="cta">See details &rarr;</span></div></a><a class="card" data-city="Enterprise" data-band="200-300" data-size="1500-2000" href="https://www.zillow.com/homedetails/420-Brandi-Ave-Enterprise-AL-36330/464609071_zpid/" target="_blank" rel="noopener"><div class="photo"><img src="covers/420-brandi-ave-enterprise-al-36330.jpg" alt="Front of 420 Brandi Ave" loading="lazy"><span class="badge">New construction</span></div><div class="meta"><h2>420 Brandi Ave</h2><p class="city">Enterprise, AL 36330</p><p class="specs">3 bd &middot; 2 ba &middot; 1,600 sq ft</p><span class="cta">See details &rarr;</span></div></a><a class="card" data-city="Enterprise" data-band="200-300" data-size="1500-2000" href="https://www.zillow.com/homes/422-Brandi-Ave-Enterprise-AL-36330_rb/" target="_blank" rel="noopener"><div class="photo"><div class="ph" aria-hidden="true"><span>Photo coming soon</span></div><span class="badge">New construction</span></div><div class="meta"><h2>422 Brandi Ave</h2><p class="city">Enterprise, AL 36330</p><p class="specs">4 bd &middot; 2 ba &middot; 1,724 sq ft</p><span class="cta">See details &rarr;</span></div></a><a class="card" data-city="Geneva" data-band="100-200" data-size="u1500" href="https://www.zillow.com/homedetails/702-W-Jernigan-Ave-Geneva-AL-36340/109515283_zpid/" target="_blank" rel="noopener"><div class="photo"><div class="ph" aria-hidden="true"><span>Photo coming soon</span></div></div><div class="meta"><h2>702 W Jernigan Ave</h2><p class="city">Geneva, AL 36340</p><p class="specs">4 bd &middot; 2 ba &middot; 1,390 sq ft</p><span class="cta">See details &rarr;</span></div></a><a class="card" data-city="Ozark" data-band="100-200" data-size="u1500" href="https://www.zillow.com/homedetails/120-Whittle-Hudson-Rd-Ozark-AL-36360/75955254_zpid/" target="_blank" rel="noopener"><div class="photo"><img src="covers/120-whittle-hudson-rd-ozark-al-36360.jpg" alt="Front of 120 Whittle Hudson Rd" loading="lazy"></div><div class="meta"><h2>120 Whittle Hudson Rd</h2><p class="city">Ozark, AL 36360</p><p class="specs">3 bd &middot; 2 ba &middot; 1,468 sq ft</p><span class="cta">See details &rarr;</span></div></a><a class="card" data-city="Ozark" data-band="100-200" data-size="u1500" href="https://www.zillow.com/homedetails/172-Frank-Marshall-Rd-Ozark-AL-36360/81681731_zpid/" target="_blank" rel="noopener"><div class="photo"><img src="covers/172-frank-marshall-rd-ozark-al-36360.jpg" alt="Front of 172 Frank Marshall Rd" loading="lazy"></div><div class="meta"><h2>172 Frank Marshall Rd</h2><p class="city">Ozark, AL 36360</p><p class="specs">3 bd &middot; 2 ba &middot; 1,408 sq ft</p><span class="cta">See details &rarr;</span></div></a>
     <p class="empty" id="empty" hidden>No homes match these filters right now. Try another city or price range.</p>
@@ -118,29 +152,46 @@ footer { color: var(--muted); font-size: 14px; padding: 16px 0 28px; }
 </main>
 <script>
 (function () {
-  var cityChips = document.querySelectorAll('.chip:not(.pchip):not(.schip)');
-  var sizeChips = document.querySelectorAll('.schip');
-  var bandChips = document.querySelectorAll('.pchip');
   var cards = document.querySelectorAll('.card');
   var count = document.getElementById('count');
   var empty = document.getElementById('empty');
-  var city = '', band = '', size = '';
+  var panel = document.getElementById('fpanel'), scrim = document.getElementById('scrim');
+  var fbtn = document.getElementById('fbtn'), fcount = document.getElementById('fcount');
+  var active = document.getElementById('active'), show = document.getElementById('fshow');
+  var names = ['city', 'band', 'size'];
+  var attr = { city: 'data-city', band: 'data-band', size: 'data-size' };
+  function val(n) { var r = panel.querySelector('input[name="' + n + '"]:checked'); return r ? r.value : ''; }
+  function label(n) { var r = panel.querySelector('input[name="' + n + '"]:checked'); return r ? r.nextElementSibling.textContent : ''; }
+  function matches(c) { return names.every(function (n) { var v = val(n); return !v || c.getAttribute(attr[n]) === v; }); }
   function apply() {
-    var n = 0;
-    cards.forEach(function (c) {
-      var on = (!city || c.getAttribute('data-city') === city) && (!band || c.getAttribute('data-band') === band) && (!size || c.getAttribute('data-size') === size);
-      c.style.display = on ? '' : 'none';
-      if (on) n++;
+    var k = 0;
+    cards.forEach(function (c) { var on = matches(c); c.style.display = on ? '' : 'none'; if (on) k++; });
+    count.textContent = k + (k === 1 ? ' home' : ' homes');
+    empty.hidden = k !== 0;
+    show.textContent = 'Show ' + k + (k === 1 ? ' home' : ' homes');
+    var on = names.filter(function (n) { return val(n); });
+    fcount.hidden = !on.length; fcount.textContent = on.length;
+    active.innerHTML = '';
+    on.forEach(function (n) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'pill';
+      b.setAttribute('aria-label', 'Remove filter ' + label(n));
+      b.textContent = label(n) + ' '; var x = document.createElement('b'); x.textContent = '×'; b.appendChild(x);
+      b.addEventListener('click', function () { panel.querySelector('input[name="' + n + '"][value=""]').checked = true; apply(); });
+      active.appendChild(b);
     });
-    count.textContent = n + (n === 1 ? ' home' : ' homes');
-    empty.hidden = n !== 0;
-    cityChips.forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-city') === city)); });
-    bandChips.forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-band') === band)); });
-    sizeChips.forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-size') === size)); });
+    if (on.length > 1) { var c = document.createElement('button'); c.type = 'button'; c.className = 'pill link'; c.textContent = 'Clear all'; c.addEventListener('click', clearAll); active.appendChild(c); }
   }
-  cityChips.forEach(function (b) { b.addEventListener('click', function () { city = b.getAttribute('data-city'); apply(); }); });
-  bandChips.forEach(function (b) { b.addEventListener('click', function () { band = b.getAttribute('data-band'); apply(); }); });
-  sizeChips.forEach(function (b) { b.addEventListener('click', function () { size = b.getAttribute('data-size'); apply(); }); });
+  function clearAll() { names.forEach(function (n) { panel.querySelector('input[name="' + n + '"][value=""]').checked = true; }); apply(); }
+  function open() { panel.hidden = false; scrim.hidden = false; document.body.classList.add('locked'); fbtn.setAttribute('aria-expanded', 'true'); document.getElementById('fclose').focus(); }
+  function close() { panel.hidden = true; scrim.hidden = true; document.body.classList.remove('locked'); fbtn.setAttribute('aria-expanded', 'false'); fbtn.focus(); }
+  fbtn.addEventListener('click', open);
+  document.getElementById('fclose').addEventListener('click', close);
+  scrim.addEventListener('click', close);
+  show.addEventListener('click', close);
+  document.getElementById('fclear').addEventListener('click', clearAll);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !panel.hidden) close(); });
+  panel.addEventListener('change', apply);
+  apply();
 })();
 </script>
 </body>
