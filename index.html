@@ -59,7 +59,15 @@ h1 { font-family: var(--display); font-weight: 400; letter-spacing: .03em; font-
 fieldset { border: 0; border-top: 1px solid var(--line); margin: 0; padding: 14px 0 16px; }
 fieldset:first-child { border-top: 0; }
 legend { float: left; width: 100%; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); padding: 0; margin-bottom: 10px; }
-legend + .opts { clear: both; }
+legend + .opts, legend + .tiles { clear: both; }
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.tile input { position: absolute; opacity: 0; pointer-events: none; }
+.tile span { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px; height: 100%; padding: 12px 6px; border: 1px solid var(--line); border-radius: 10px; cursor: pointer; background: var(--card); color: var(--ink); }
+.tile b { font-size: 13px; line-height: 1.2; }
+.tile small { font-size: 12px; color: var(--muted); line-height: 1.25; }
+.tile svg { margin-bottom: 2px; }
+.tile input:checked + span { border-color: var(--navy); background: var(--sky); box-shadow: inset 0 0 0 1px var(--navy); }
+.tile input:focus-visible + span { outline: 3px solid var(--sky); outline-offset: 2px; }
 .opts { display: flex; flex-wrap: wrap; gap: 8px; }
 .opt input { position: absolute; opacity: 0; pointer-events: none; }
 .opt span { display: inline-block; font: 600 14px var(--body); border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px; cursor: pointer; background: var(--card); }
@@ -125,7 +133,7 @@ footer { color: var(--muted); font-size: 14px; padding: 16px 0 28px; }
   <aside class="panel" id="fpanel" role="dialog" aria-modal="true" aria-labelledby="ftitle" hidden>
     <div class="phead"><h2 id="ftitle">Filters</h2><button type="button" class="x" id="fclose" aria-label="Close filters">&times;</button></div>
     <div class="pbody">
-      <fieldset><legend>Home type</legend><div class="opts"><label class="opt"><input type="radio" name="kind" value="" checked><span>Any</span></label><label class="opt"><input type="radio" name="kind" value="newbuild"><span>New Builds</span></label><label class="opt"><input type="radio" name="kind" value="ready"><span>Move-In Ready</span></label><label class="opt"><input type="radio" name="kind" value="value"><span>Value Opportunity</span></label></div></fieldset>
+      <fieldset><legend>Home type</legend><div class="tiles"><input class="anykind" type="radio" name="kind" value="" checked hidden><label class="tile"><input type="radio" name="kind" value="ready"><span><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg><b>Move-In Ready</b><small>Updated homes</small></span></label><label class="tile"><input type="radio" name="kind" value="value"><span><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 12-8.4 8.4a2.1 2.1 0 0 1-3-3L12 9"/><path d="m18 15 4-4"/><path d="m21.5 11.5-1.9-1.9a2 2 0 0 1-.6-1.4V7l-2.3-2.3A6 6 0 0 0 12.5 3H9l.9.8A6.2 6.2 0 0 1 12 8.4V10l2 2h1.2a2 2 0 0 1 1.4.6l1.9 1.9"/></svg><b>Value Opportunity</b><small>Room to make it yours</small></span></label><label class="tile"><input type="radio" name="kind" value="newbuild"><span><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11 11 4.5l4 3.3"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-6"/><path d="M19 2v6M16 5h6"/></svg><b>New Construction</b><small>Brand-new homes</small></span></label></div></fieldset>
       <fieldset><legend>City</legend><div class="opts"><label class="opt"><input type="radio" name="city" value="" checked><span>Any</span></label><label class="opt"><input type="radio" name="city" value="Cowarts"><span>Cowarts</span></label><label class="opt"><input type="radio" name="city" value="Dothan"><span>Dothan</span></label><label class="opt"><input type="radio" name="city" value="Enterprise"><span>Enterprise</span></label><label class="opt"><input type="radio" name="city" value="Geneva"><span>Geneva</span></label><label class="opt"><input type="radio" name="city" value="Ozark"><span>Ozark</span></label></div></fieldset>
       <fieldset><legend>Price</legend><div class="opts"><label class="opt"><input type="radio" name="band" value="" checked><span>Any</span></label><label class="opt"><input type="radio" name="band" value="u100"><span>Under $100K</span></label><label class="opt"><input type="radio" name="band" value="100-200"><span>$100K–$200K</span></label><label class="opt"><input type="radio" name="band" value="200-300"><span>$200K–$300K</span></label><label class="opt"><input type="radio" name="band" value="300p"><span>$300K+</span></label></div></fieldset>
       <fieldset><legend>Size</legend><div class="opts"><label class="opt"><input type="radio" name="size" value="" checked><span>Any</span></label><label class="opt"><input type="radio" name="size" value="u1500"><span>Under 1,500 sq ft</span></label><label class="opt"><input type="radio" name="size" value="1500-2000"><span>1,500–2,000</span></label><label class="opt"><input type="radio" name="size" value="2000-2500"><span>2,000–2,500</span></label><label class="opt"><input type="radio" name="size" value="2500p"><span>2,500+ sq ft</span></label></div></fieldset>
@@ -166,7 +174,7 @@ footer { color: var(--muted); font-size: 14px; padding: 16px 0 28px; }
   var attr = { kind: 'data-kind', city: 'data-city', band: 'data-band', size: 'data-size', beds: 'data-beds', baths: 'data-baths' };
   var atLeast = { beds: 1, baths: 1 };
   function val(n) { var r = panel.querySelector('input[name="' + n + '"]:checked'); return r ? r.value : ''; }
-  function label(n) { var r = panel.querySelector('input[name="' + n + '"]:checked'); return r ? r.nextElementSibling.textContent : ''; }
+  function label(n) { var r = panel.querySelector('input[name="' + n + '"]:checked'); if (!r) return ''; var sp = r.nextElementSibling, bb = sp.querySelector('b'); return bb ? bb.textContent : sp.textContent; }
   function matches(c) { return names.every(function (n) { var v = val(n); if (!v) return true; var a = c.getAttribute(attr[n]); return atLeast[n] ? parseFloat(a) >= parseFloat(v) : a === v; }); }
   function apply() {
     var k = 0;
@@ -196,6 +204,11 @@ footer { color: var(--muted); font-size: 14px; padding: 16px 0 28px; }
   document.getElementById('fclear').addEventListener('click', clearAll);
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !panel.hidden) close(); });
   panel.addEventListener('change', apply);
+  panel.querySelectorAll('.tile input').forEach(function (r) {
+    var was = false;
+    r.parentNode.addEventListener('pointerdown', function () { was = r.checked; });
+    r.addEventListener('click', function () { if (was) { panel.querySelector('.anykind').checked = true; was = false; apply(); } });
+  });
   apply();
 })();
 </script>
